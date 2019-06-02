@@ -1,14 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package realizable;
 
 import java.util.Scanner;
-
-/**
- *
+/*
  * @author mmaaz
  */
 public class Realizable {
@@ -25,10 +18,10 @@ public class Realizable {
                     else P[i][j+sum]=false;
                 }
                 else{
-                    if(j<0 /* j+sum-A[i-1]>=0*/){
+                    if(j<0){
                         P[i][j+sum]=P[i-1][j+sum+A[i-1]] || P[i-1][(j+sum-A[i-1])>=0 ?j+sum-A[i-1]:j+sum+A[i-1]];
                     }
-                    else if(j>=0 /*|| j+sum+A[i-1]<=2*sum*/) {
+                    else if(j>=0) {
                         P[i][j+sum]=P[i-1][j+sum-A[i-1]] || P[i-1][j+sum+A[i-1]<=2*sum ? j+sum+A[i-1]:j+sum-A[i-1]] ;
                     }
                 }
@@ -40,6 +33,9 @@ public class Realizable {
             }System.out.println("");
         }*/
         return P[n][T+sum];
+    }
+    public static String showOne(int [] A, int T){
+        
     }
     public static int sum(int [] A){
         int sum=0;
@@ -71,8 +67,6 @@ public class Realizable {
         String p1="";
         if(!result) p1="not "; 
         System.out.println("\t\tThe value is " + p1 + "realizable");
-       
-        
     }
     
 }
