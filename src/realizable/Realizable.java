@@ -12,7 +12,7 @@ import java.util.Scanner;
  * @author mmaaz
  */
 public class Realizable {
-    public static String realizable(int [] A, int T){
+    public static boolean realizable(int [] A, int T){
         int n= A.length;
         int sum= sum(A);
         int negS= -1*sum;
@@ -24,22 +24,22 @@ public class Realizable {
                     if(j==0) P[i][j+sum]=true;
                     else P[i][j+sum]=false;
                 }
-                //else if(j+sum+A[i-1]>2*sum) continue; 
-                //else if (j+sum- A[i-1] < 0 ) continue;
                 else{
-                    if(j<0){
-                        P[i][j+sum]=P[i-1][j+sum+A[i]];
+                    if(j<0 /* j+sum-A[i-1]>=0*/){
+                        P[i][j+sum]=P[i-1][j+sum+A[i-1]] || P[i-1][(j+sum-A[i-1])>=0 ?j+sum-A[i-1]:j+sum+A[i-1]];
                     }
-                   
+                    else if(j>=0 /*|| j+sum+A[i-1]<=2*sum*/) {
+                        P[i][j+sum]=P[i-1][j+sum-A[i-1]] || P[i-1][j+sum+A[i-1]<=2*sum ? j+sum+A[i-1]:j+sum-A[i-1]] ;
+                    }
                 }
             }
         }
-        for (int i = 0; i < P.length; i++) {
+        /*for (int i = 0; i < P.length; i++) {
             for (int j = 0; j<P[0].length; j++) {
                 System.out.print(P[i][j]+ " ");
             }System.out.println("");
-        }
-        return P[n][T] + " "+ n;
+        }*/
+        return P[n][T+sum];
     }
     public static int sum(int [] A){
         int sum=0;
@@ -50,9 +50,27 @@ public class Realizable {
     }
     public static void main(String[] args) {
         Scanner in =new Scanner(System.in);
-        int [] A= {2,3,4};
+        System.out.println("Enter the array size: ");
+        int n= in.nextInt();
+        int [] A= new int[n];
+        System.out.println("Empty array created. Enter the array elements:");
+        for (int i = 0; i < n; i++) {
+            A[i]= in.nextInt();
+        }
+        System.out.println("Enter the number whose realizability is to be checked: ");
         int T= in.nextInt();
-        System.out.println(realizable(A, T));
+        boolean result = (realizable(A, T));
+        System.out.println("");
+        
+        System.out.print("n= " + n + "\nThe input array: \n" );
+        for (int i = 0; i < n; i++) {
+            System.out.print(A[i]+ " ");
+        }
+        System.out.println("\nT= " + T);
+        System.out.println("\tPart1: Realizability Check");
+        String p1="";
+        if(!result) p1="not "; 
+        System.out.println("\t\tThe value is " + p1 + "realizable");
        
         
     }
