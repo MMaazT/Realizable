@@ -54,25 +54,25 @@ public class Realizable {
             }
         }
         int i=n;
-        int j=T+sum;
-        if(!P[i][j]){
+        int j=T;
+        if(!P[i][j+sum]){
             expr="The value "+ T + " is not realizable";
             return expr;
         }
         else{
-            while(i>=0){
-                if(P[i-1][j+sum-A[i-1]]){
+            while(i>0){
+                if(j>=0 && P[i-1][j+sum-A[i-1]]){
                     expr= "+" + A[i-1]+expr; 
                     j=j-A[i-1];
                 }
-                else if (P[i-1][j+sum+A[i-1]]) {
+                else if (j<=2*sum && P[i-1][j+sum+A[i-1]]) {
                     expr= "-" + A[i-1]+expr;
                     j=j+A[i-1];
                 }
                 i--;
             }
         }
-        System.out.println(expr);
+        //System.out.println(expr);
         return expr;
     }
     public static int sum(int [] A){
@@ -105,7 +105,11 @@ public class Realizable {
         String p1="";
         if(!result) p1="not "; 
         System.out.println("\t\tThe value is " + p1 + "realizable");
-        System.out.println(showOne(A,T));
+        System.out.println("\tPart 2: One Solution");
+        if(!result)
+            System.out.println("\t\tThe value is " + p1 + "realizable");
+        else
+            System.out.println("\t\tSolution: " + showOne(A,T));
     }
     
 }
