@@ -4,42 +4,10 @@ import java.util.Scanner;
 /*
  * @author mmaaz
  */
-class Node {
-    int value;
-    char op;
-    Node left;
-    Node right;
- 
-    Node(int value, char op ) {
-        this.value = value;
-        this.op=op;
-        right = null;
-        left = null;
-    }
-}
-
-class BinaryTree {
-
-    Node root;
-    
-    public Node addRecursive(Node current, int value, char op ) {
-    if (current == null) {
-        return new Node(value, op);
-    }
-    if (op == '-') {
-        current.left = addRecursive(current.left, value, op);
-    } else if (op == '+') {
-        current.right = addRecursive(current.right, value, op);
-    } else {
-        // value already exists
-        return current;
-    }
- 
-    return current;
-}
-    
-}
 public class Realizable {
+    
+    public static int count=0;
+    public static String ctr="";
     public static boolean realizable(int [] A, int T){
         int n= A.length;
         int sum= sum(A);
@@ -72,7 +40,6 @@ public class Realizable {
         int n= A.length;
         int sum= sum(A);
         int negS= -1*sum;
-        BinaryTree bt= new BinaryTree(); 
         boolean P[][]= new boolean[n+1][2*sum+1];
         for (int i = 0; i < P.length; i++) {
             for (int j = negS; j<=sum; j++) {
@@ -107,7 +74,7 @@ public class Realizable {
                         j=j+A[i-1];
                     }
                 }
-                else if (j<0){
+                else {
                     if(P[i-1][j+sum+A[i-1]]){
                         expr= "-" + A[i-1]+expr;
                         j=j+A[i-1];
@@ -116,7 +83,6 @@ public class Realizable {
                         expr= "+" + A[i-1]+expr;
                         j=j-A[i-1];
                     }
-                    
                 }
                 i--;
             }
@@ -128,7 +94,6 @@ public class Realizable {
         int n= A.length;
         int sum= sum(A);
         int negS= -1*sum;
-        BinaryTree bt= new BinaryTree(); 
         boolean P[][]= new boolean[n+1][2*sum+1];
         for (int i = 0; i < P.length; i++) {
             for (int j = negS; j<=sum; j++) {
@@ -152,28 +117,28 @@ public class Realizable {
             return expr;
         }
         else{
-            while(i>0){
-                /*if(j>=0 && P[i-1][j+sum-A[i-1]]){
-                    expr= "+" + A[i-1]+expr; 
-                    j=j-A[i-1];
-                }
-                else if (j<0 && P[i-1][j+sum+A[i-1]]) {
-                    expr= "-" + A[i-1]+expr;
-                    j=j+A[i-1];
-                }
-                i--;*/
-                
-                if(P[i-1][j+sum+A[i-1]]){
-                    Node root= null;
-                    bt.addRecursive(root, A[i-1], '-');
-                }
-                if(P[i-1][j+sum-A[i-1]]){
-                    Node root=null;
-                    bt.addRecursive(root, A[i-1], '+');          
-                }
-            }
+            count=0;
+            String s="";
+            computeMatrix(P,i,j,sum, A,T, s);
         }
         return expr;
+    }
+    
+    public static void computeMatrix(boolean P [][], int i, int j, int sum, int[] A, int T, String s){
+        if(j+sum<0  || !P[i][j+sum] )
+            return;
+        if(i==0){
+            count++;
+            ctr+= " " + count;
+            System.out.print("\tSol " +count+ ":\t" + s +" = " + T+ "\n" ) ;
+        }
+        else{
+            String s_left= "+" + A[i-1]+s; 
+            computeMatrix(P, i-1, j-A[i-1], sum, A,T, s_left);
+            
+            String s_right= "-" + A[i-1]+s;
+            computeMatrix(P, i-1, j+A[i-1], sum, A,T, s_right);
+        }
     }
     public static int sum(int [] A){
         int sum=0;
@@ -208,8 +173,12 @@ public class Realizable {
         System.out.println("\tPart 2: One Solution");
         if(!result)
             System.out.println("\t\tThe value is " + p1 + "realizable");
-        else
+        else{
             System.out.println("\t\tSolution: " + showOne(A,T) + " = " + T);
+            System.out.println("Part 3: All Solutions");
+            showAll(A,T);
+            System.out.println("\tNumber of Solutions: " + ctr.split(" ")[ctr.split(" ").length-1]);
+        }
     }
     
 }
