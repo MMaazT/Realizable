@@ -4,6 +4,41 @@ import java.util.Scanner;
 /*
  * @author mmaaz
  */
+class Node {
+    int value;
+    char op;
+    Node left;
+    Node right;
+ 
+    Node(int value, char op ) {
+        this.value = value;
+        this.op=op;
+        right = null;
+        left = null;
+    }
+}
+
+class BinaryTree {
+
+    Node root;
+    
+    public Node addRecursive(Node current, int value, char op ) {
+    if (current == null) {
+        return new Node(value, op);
+    }
+    if (op == '-') {
+        current.left = addRecursive(current.left, value, op);
+    } else if (op == '+') {
+        current.right = addRecursive(current.right, value, op);
+    } else {
+        // value already exists
+        return current;
+    }
+ 
+    return current;
+}
+    
+}
 public class Realizable {
     public static boolean realizable(int [] A, int T){
         int n= A.length;
@@ -37,6 +72,7 @@ public class Realizable {
         int n= A.length;
         int sum= sum(A);
         int negS= -1*sum;
+        BinaryTree bt= new BinaryTree(); 
         boolean P[][]= new boolean[n+1][2*sum+1];
         for (int i = 0; i < P.length; i++) {
             for (int j = negS; j<=sum; j++) {
@@ -61,18 +97,82 @@ public class Realizable {
         }
         else{
             while(i>0){
-                if(j>=0 && P[i-1][j+sum-A[i-1]]){
-                    expr= "+" + A[i-1]+expr; 
-                    j=j-A[i-1];
+                if(j>=0 ){
+                    if(P[i-1][j+sum-A[i-1]]){
+                        expr= "+" + A[i-1]+expr; 
+                        j=j-A[i-1];
+                    }
+                    else{
+                        expr= "-" + A[i-1]+expr; 
+                        j=j+A[i-1];
+                    }
                 }
-                else if (j<=2*sum && P[i-1][j+sum+A[i-1]]) {
-                    expr= "-" + A[i-1]+expr;
-                    j=j+A[i-1];
+                else if (j<0){
+                    if(P[i-1][j+sum+A[i-1]]){
+                        expr= "-" + A[i-1]+expr;
+                        j=j+A[i-1];
+                    }
+                    else{
+                        expr= "+" + A[i-1]+expr;
+                        j=j-A[i-1];
+                    }
+                    
                 }
                 i--;
             }
         }
-        //System.out.println(expr);
+        return expr;
+    }
+    public static String showAll(int []A, int T){
+        String expr="";
+        int n= A.length;
+        int sum= sum(A);
+        int negS= -1*sum;
+        BinaryTree bt= new BinaryTree(); 
+        boolean P[][]= new boolean[n+1][2*sum+1];
+        for (int i = 0; i < P.length; i++) {
+            for (int j = negS; j<=sum; j++) {
+                if(i==0){
+                    P[i][j+sum] = j==0;
+                }
+                else{
+                    if(j<0){
+                        P[i][j+sum]=P[i-1][j+sum+A[i-1]] || P[i-1][(j+sum-A[i-1])>=0 ?j+sum-A[i-1]:j+sum+A[i-1]];
+                    }
+                    else if(j>=0) {
+                        P[i][j+sum]=P[i-1][j+sum-A[i-1]] || P[i-1][j+sum+A[i-1]<=2*sum ? j+sum+A[i-1]:j+sum-A[i-1]] ;
+                    }
+                }
+            }
+        }
+        int i=n;
+        int j=T;
+        if(!P[i][j+sum]){
+            expr="The value "+ T + " is not realizable";
+            return expr;
+        }
+        else{
+            while(i>0){
+                /*if(j>=0 && P[i-1][j+sum-A[i-1]]){
+                    expr= "+" + A[i-1]+expr; 
+                    j=j-A[i-1];
+                }
+                else if (j<0 && P[i-1][j+sum+A[i-1]]) {
+                    expr= "-" + A[i-1]+expr;
+                    j=j+A[i-1];
+                }
+                i--;*/
+                
+                if(P[i-1][j+sum+A[i-1]]){
+                    Node root= null;
+                    bt.addRecursive(root, A[i-1], '-');
+                }
+                if(P[i-1][j+sum-A[i-1]]){
+                    Node root=null;
+                    bt.addRecursive(root, A[i-1], '+');          
+                }
+            }
+        }
         return expr;
     }
     public static int sum(int [] A){
@@ -109,7 +209,7 @@ public class Realizable {
         if(!result)
             System.out.println("\t\tThe value is " + p1 + "realizable");
         else
-            System.out.println("\t\tSolution: " + showOne(A,T));
+            System.out.println("\t\tSolution: " + showOne(A,T) + " = " + T);
     }
     
 }
